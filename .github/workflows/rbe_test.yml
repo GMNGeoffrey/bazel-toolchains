@@ -19,6 +19,6 @@ jobs:
           git config --global remote.origin.fetch '+refs/pull/*:refs/remotes/origin/pull/*'
           git clone https://github.com/$GITHUB_REPOSITORY $GITHUB_WORKSPACE --no-checkout --no-tags
           git checkout $GITHUB_SHA
-      - name: Building with bazel
+      - name: Testing with bazel and RBE
         run: |
-          bazel --bazelrc=bazelrc/latest.bazelrc test //examples/remotebuildexecution/hello_world/cc:say_hello_test
+          bazel --bazelrc=bazelrc/latest.bazelrc test //examples/remotebuildexecution/hello_world/cc:say_hello_test --config=remote --remote_instance_name=projects/iree-rbe/instances/default_instance
