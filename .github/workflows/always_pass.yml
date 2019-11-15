@@ -8,5 +8,5 @@ jobs:
   always_pass:
     runs-on: ubuntu-18.04
     steps:
-      - name: Failing unconditionally
-        run: false
+      - name: Passing unconditionally
+        run: true
