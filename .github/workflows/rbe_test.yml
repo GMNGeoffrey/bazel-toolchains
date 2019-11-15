@@ -24,5 +24,8 @@ jobs:
           NOT_REALLY_A_SECRET: ${{ secrets.NOT_REALLY_A_SECRET }}
         run: echo "$NOT_REALLY_A_SECRET"
       - name: Testing with bazel and RBE
+        env:
+          RBE_CREDENTIALS: ${{ secrets.IREE_RBE_GOOGLE_CREDENTIALS }}
         run: |
-          bazel --bazelrc=bazelrc/latest.bazelrc test //examples/remotebuildexecution/hello_world/cc:say_hello_test --config=remote --remote_instance_name=projects/iree-rbe/instances/default_instance --google_credentials="${RBE_CREDENTIALS}"
+          echo "${RBE_CREDENTIALS}" > "$HOME/credentials.json"
+          bazel --bazelrc=bazelrc/latest.bazelrc test //examples/remotebuildexecution/hello_world/cc:say_hello_test --config=remote --remote_instance_name=projects/iree-rbe/instances/default_instance --google_credentials="$HOME/credentials.json"
