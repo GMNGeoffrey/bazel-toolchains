@@ -29,7 +29,7 @@ jobs:
           echo "Expunging cache"
           bazel --bazelrc=bazelrc/latest.bazelrc clean --expunge_async
           echo "Rebuilding remotely"
-          bazel --bazelrc=bazelrc/latest.bazelrc test //examples/remotebuildexecution/hello_world/cc:say_hello_test --config=remote --remote_instance_name=projects/[PROJECT_ID]/instances/default_instance --google_credentials="$HOME/credentials.json"
+          bazel --bazelrc=bazelrc/latest.bazelrc test //examples/remotebuildexecution/hello_world/cc:say_hello_test --config=remote --remote_instance_name=projects/iree-rbe/instances/default_instance --google_credentials="$HOME/credentials.json"
           echo "Expunging cache"
           bazel --bazelrc=bazelrc/latest.bazelrc clean --expunge_async
           echo "Building locally with remote cache"
