@@ -5,7 +5,7 @@ on:
     types: [opened, ready_for_review, synchronize]
 
 jobs:
-  build:
+  always_fail:
     runs-on: ubuntu-18.04
     steps:
       - name: Failing unconditionally
