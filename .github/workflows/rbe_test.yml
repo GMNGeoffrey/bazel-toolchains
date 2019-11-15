@@ -19,13 +19,23 @@ jobs:
           git config --global remote.origin.fetch '+refs/pull/*:refs/remotes/origin/pull/*'
           git clone https://github.com/$GITHUB_REPOSITORY $GITHUB_WORKSPACE --no-checkout --no-tags
           git checkout $GITHUB_SHA
-      - name: Testing secrets
-        env:
-          NOT_REALLY_A_SECRET: ${{ secrets.NOT_REALLY_A_SECRET }}
-        run: echo "$NOT_REALLY_A_SECRET"
       - name: Testing with bazel and RBE
         env:
           RBE_CREDENTIALS: ${{ secrets.IREE_RBE_GOOGLE_CREDENTIALS }}
         run: |
           echo "${RBE_CREDENTIALS}" > "$HOME/credentials.json"
+          echo "Building remotely"
           bazel --bazelrc=bazelrc/latest.bazelrc test //examples/remotebuildexecution/hello_world/cc:say_hello_test --config=remote --remote_instance_name=projects/iree-rbe/instances/default_instance --google_credentials="$HOME/credentials.json"
+          echo "Expunging cache"
+          bazel --bazelrc=bazelrc/latest.bazelrc clean --expunge_async
+          echo "Rebuilding remotely"
+          bazel --bazelrc=bazelrc/latest.bazelrc test //examples/remotebuildexecution/hello_world/cc:say_hello_test --config=remote --remote_instance_name=projects/[PROJECT_ID]/instances/default_instance --google_credentials="$HOME/credentials.json"
+          echo "Expunging cache"
+          bazel --bazelrc=bazelrc/latest.bazelrc clean --expunge_async
+          echo "Building locally with remote cache"
+          bazel --bazelrc=bazelrc/latest.bazelrc test //examples/remotebuildexecution/hello_world/cc:say_hello_test --remote_cache=grpcs://remotebuildexecution.googleapis.com --host_platform_remote_properties_override='properties:{name:"cache-silo-key" value:"quickstart"}' --remote_instance_name=projects/iree-rbe/instances/default_instance --google_credentials="$HOME/credentials.json"
+          echo "Expunging cache"
+          bazel --bazelrc=bazelrc/latest.bazelrc clean --expunge_async
+          echo "Rebuilding locally with remote cache"
+          bazel --bazelrc=bazelrc/latest.bazelrc test //examples/remotebuildexecution/hello_world/cc:say_hello_test --remote_cache=grpcs://remotebuildexecution.googleapis.com --host_platform_remote_properties_override='properties:{name:"cache-silo-key" value:"quickstart"}' --remote_instance_name=projects/iree-rbe/instances/default_instance --google_credentials="$HOME/credentials.json"
+          
