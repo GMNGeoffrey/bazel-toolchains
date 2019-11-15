@@ -1,0 +1,12 @@
+name: Always Pass
+
+on:
+  pull_request:
+    types: [opened, ready_for_review, synchronize]
+
+jobs:
+  always_pass:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Failing unconditionally
+        run: false
