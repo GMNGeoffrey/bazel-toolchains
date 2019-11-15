@@ -9,8 +9,6 @@ hosts Bazel toolchain configs. These configs are required to configure
 Bazel to issue commands that will execute inside a Docker container via a remote
 execution environment.
 
-I'm changing something
-
 These toolchain configs include:
 * C/C++ CROSSTOOL file,
 * BUILD file with toolchain rules, and
